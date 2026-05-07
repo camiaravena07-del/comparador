@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparador — The North Face</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --black: #0a0a0a; --border: #e0e0e0; --muted: #aaa; --sub: #777; --text: #222; --bg: #fff; --surface: #f7f7f7; }
+  body { font-family: "Barlow", sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 24px 16px 56px; }
+  .header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1.5px solid var(--black); }
+  .eyebrow { font-family: "Barlow Condensed", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--sub); margin-bottom: 4px; }
+  .h1 { font-family: "Barlow Condensed", sans-serif; font-size: 28px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; line-height: 1; color: var(--black); }
+  .tnf-logo { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; opacity: .2; }
+  .tnf-logo span { font-family: "Barlow Condensed", sans-serif; font-size: 9px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; line-height: 1.1; }
+  .selector-section { margin-bottom: 24px; }
+  .selector-label { font-family: "Barlow Condensed", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--sub); margin-bottom: 8px; }
+  .selector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .selector-tag { font-family: "Barlow Condensed", sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .selector-tag.active { color: var(--black); }
+  .selector-wrap { position: relative; }
+  select { width: 100%; appearance: none; -webkit-appearance: none; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 10px 28px 10px 10px; font-family: "Barlow", sans-serif; font-size: 12px; color: var(--black); cursor: pointer; outline: none; transition: border-color .15s; }
+  select:focus { border-color: var(--black); }
+  .select-arrow { position: absolute; right: 9px; bottom: 11px; pointer-events: none; font-size: 9px; color: var(--sub); }
+  .compare-btn { width: 100%; padding: 12px; background: var(--black); color: #fff; border: none; border-radius: 4px; font-family: "Barlow Condensed", sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; transition: opacity .15s; }
+  .compare-btn:hover { opacity: .85; }
+  .compare-btn:disabled { opacity: .3; cursor: not-allowed; }
+  .products { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; }
+  .pcard { background: var(--surface); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); position: relative; }
+  .pcard.active { border: 2px solid var(--black); }
+  .pcard img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; }
+  .pcard-overlay { position: absolute; top: 0; left: 0; right: 0; padding: 10px; }
+  .pcard-tag { font-family: "Barlow Condensed", sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; padding: 3px 8px; display: inline-block; }
+  .pcard.active .pcard-tag { background: var(--black); color: #fff; }
+  .pcard:not(.active) .pcard-tag { background: rgba(255,255,255,.75); color: var(--text); }
+  .pcard-body { padding: 12px; border-top: 1px solid var(--border); }
+  .pcard-name { font-family: "Barlow Condensed", sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--black); line-height: 1.2; margin-bottom: 5px; }
+  .pcard-price { font-size: 16px; font-weight: 500; color: var(--black); }
+  .pcard-installment { font-size: 10px; color: var(--muted); margin-top: 1px; }
+  .sale-price { color: #c00; }
+  .original-price { text-decoration: line-through; color: var(--muted); font-size: 12px; }
+  .stock-ok { color: #2a7a2a; font-size: 10px; font-weight: 500; }
+  .stock-low { color: #b85c00; font-size: 10px; font-weight: 500; }
+  .color-tag { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .table-section-title { font-family: "Barlow Condensed", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .table-wrap { border-radius: 4px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 24px; }
+  .table-head { display: grid; grid-template-columns: 40% 30% 30%; padding: 10px 0; background: var(--black); }
+  .th { font-family: "Barlow Condensed", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; padding: 0 14px; color: rgba(255,255,255,.4); }
+  .th.ca { color: rgba(255,255,255,.9); }
+  .th.cb { color: rgba(255,255,255,.6); }
+  .trow { display: grid; grid-template-columns: 40% 30% 30%; border-bottom: 1px solid var(--border); background: #fff; }
+  .trow:last-child { border-bottom: none; }
+  .trow:hover { background: var(--surface); }
+  .tlabel { padding: 13px 14px; font-family: "Barlow Condensed", sans-serif; font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--sub); display: flex; align-items: center; border-right: 1px solid var(--border); background: var(--surface); }
+  .tval { padding: 13px 12px; font-size: 12px; color: var(--sub); display: flex; flex-direction: column; justify-content: center; gap: 4px; line-height: 1.35; border-right: 1px solid var(--border); }
+  .tval:last-child { border-right: none; }
+  .tval.winner { color: var(--black); font-weight: 500; }
+  .tag { font-family: "Barlow Condensed", sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; display: inline-block; padding: 2px 6px; border-radius: 2px; width: fit-content; }
+  .tval.winner .tag { background: var(--black); color: #fff; }
+  .tval:not(.winner) .tag { background: #eee; color: #888; }
+  .level { display: flex; gap: 3px; align-items: center; margin-bottom: 2px; }
+  .lvl-bar { height: 3px; width: 16px; border-radius: 1px; background: #ddd; }
+  .tval:not(.winner) .lvl-bar.on { background: var(--black); }
+  .tval.winner .lvl-bar.on { background: var(--black); }
+  .ico-yes { color: #2a7a2a; font-size: 13px; }
+  .ico-no  { color: var(--muted); font-size: 13px; }
+  .verdict { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+  .verdict-top { background: var(--black); padding: 14px; }
+  .verdict-eyebrow { font-family: "Barlow Condensed", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 2px; }
+  .verdict-title { font-family: "Barlow Condensed", sans-serif; font-size: 20px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #fff; }
+  .verdict-grid { display: grid; grid-template-columns: 1fr 1fr; background: #fff; }
+  .vcard { padding: 14px; border-right: 1px solid var(--border); }
+  .vcard:last-child { border-right: none; }
+  .vcard-name { font-family: "Barlow Condensed", sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--black); margin-bottom: 5px; }
+  .vcard-use { font-size: 12px; color: var(--sub); line-height: 1.5; margin-bottom: 8px; }
+  .vtags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .vtag { font-family: "Barlow Condensed", sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 3px 6px; border-radius: 2px; border: 1px solid #ddd; color: var(--sub); }
+  .vtag.hi { background: var(--black); border-color: var(--black); color: #fff; }
+
+  /* Loading state tabla */
+  .trow.loading .tval { color: var(--muted); font-style: italic; font-size: 11px; }
+  .skeleton { display: inline-block; background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 3px; height: 12px; }
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+
+  .level{display:flex;gap:3px;align-items:center;margin-bottom:2px}
+  .lvl-bar{height:3px;width:16px;border-radius:1px;background:#ddd}
+  .tval .lvl-bar.on{background:var(--black)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <div class="header">
+    <div>
+      <div class="eyebrow">Chaquetas · The North Face</div>
+      <div class="h1">Compara y elige</div>
+    </div>
+    <div class="tnf-logo"><span>The</span><span>North</span><span>Face</span></div>
+  </div>
+  <div class="selector-section">
+    <div class="selector-label">Selecciona los productos</div>
+    <div class="selector-grid">
+      <div>
+        <div class="selector-tag active" id="tag1">Producto A</div>
+        <div class="selector-wrap">
+          <select id="sel1" onchange="onSelect()"><option value="">— Elige una chaqueta —</option></select>
+          <span class="select-arrow">&#9660;</span>
+        </div>
+      </div>
+      <div>
+        <div class="selector-tag" id="tag2">Producto B</div>
+        <div class="selector-wrap">
+          <select id="sel2" onchange="onSelect()"><option value="">— Elige una chaqueta —</option></select>
+          <span class="select-arrow">&#9660;</span>
+        </div>
+      </div>
+    </div>
+    <button class="compare-btn" id="cmp-btn" onclick="runCompare()" disabled>Comparar productos</button>
+  </div>
+  <div id="output"></div>
+</div>
+
+<script>
+var CATALOG=[{"i":"NF0A3XEO_NFLE4","t":"Chaqueta De Pluma 1996 Retro Nuptse Mujer","d":"Calce regular. -/- Diseño inspirado en el modelo Nuptse de 1996. -/- Tejido brillante anti-desgarro. -/- Podrás enrollar la capucha y guardarla en el cuello. -/- Cierre frontal expuesto VISLON®. -/- Bolsillos laterales con cierres. -/- Podrás guardarla en el bolsillo derecho. -/- Muñequeras ajustables con Velcro®. -/- Pretina ajustable.","e":"Estilo: NF0A3XEO. -/- Peso promedio: 625 G (22 Oz). -/- Centro de espalda: 23.75\". -/- Material: 40D 54 G/M² 100% Nylon anti-desgarro con acabado DWR. -/- Forro: 50D 69 G/M² 100% Tafetán de nylon. -/- Relleno de plumas de ganso de 700 certificadas al RDS por Control Union.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a3xeo_le4_1_2.jpg","l":"https://www.thenorthface.cl/chaqueta-de-pluma-1996-retro-nuptse-mujer-nf0a3xeo-nfle4","p":"399990.00 CLP","sp":"","c":"Negro","g":"MUJER","q":"320","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"},{"i":"NF0A84IU_NF4H0","t":"Chaqueta De Pluma Aconcagua 3 Mujer","d":"Corte estándar. -/- Acabado DWR sin PFC para una mayor repelencia al agua. -/- Tejido principal del cuerpo fabricado con poliéster reciclado. -/- Puños con ribete elástico. -/- Logo transferido por calor en el pecho izquierdo y hombro trasero derecho.","e":"Estilo: NF0A84IU. Sólido: 50D x 50D 78 g/m² 100% poliéster reciclado con acabado repelente al agua duradero sin PFC (sin DWR de PFC). Estampado: 50D x 50D 73 g/m² 100% poliéster reciclado con acabado DWR sin PFC. Aislamiento del cuerpo: 50% plumón de ave acuática reciclado de 600 fill, 50% poliéster reciclado. Aislamiento en la cámara superior, axila, panel lateral y solapa contra corrientes: 220 g de aislamiento de lámina de poliéster reciclado al 90%. Largo desde la parte posterior: 25.5''.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a84iu_nf4h0_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-de-pluma-aconcagua-3-mujer-nf0a84iu-nf4h0","p":"269990.00 CLP","sp":"","c":"Negro","g":"MUJER","q":"611","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"},{"i":"NF0A7QEY_NF4H0","t":"Chaqueta Impermeable Antora Hombre","d":"Calce estándar. -/- El tejido DryVent de dos capas, impermeable, transpirable y con las costuras selladas y acabado hidrófugo duradero (DWR) te mantendrá siempre seco. -/- Tejido totalmente cortaviento. -/- Diseño de estilo alpino con bolsillos con cierre para las manos. -/- Capucha de tres piezas integrada con cordón ajustable y tope de bloqueo. -/- Cierre oculto por solapa de protección con cierre de velcro en la parte central delantera. -/- Refuerzos elásticos en los puños. -/- Ajuste lateral de la pretina. -/- Logo The North Face de transferencia térmica en el lado izquierdo del pecho y en la parte trasera derecha del hombro.","e":"Estilo: NF0A7QEY. -/- Largo Centro Espalda: 73.6 cm (29\"). -/- Tela principal: 100% nylon reciclado con terminación duradera que repele el agua y que no contiene PFC (DWR libre de PFC) de 70D y de 88 g/m² con tecnología DryVent 2L. -/- Tela forro interno: 100% poliéster reciclado tipo malla 50 g/m². -/- Tela forro interno de la capucha y de las mangas: 100% poliéster reciclado tipo tafeta de 75D y de 66 g/m².","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a7qey_nf4h0_1_1.jpg","l":"https://www.thenorthface.cl/m-antora-jacket-nf0a7qey-nf4h0","p":"139990.00 CLP","sp":"","c":"Negro","g":"HOMBRE","q":"6301","a":"In Stock","pm":"CHAQUETAS","pm2":"IMPERMEABLES SIN RELLENO"},{"i":"NF0A8BKD_NFJK3","t":"Chaqueta Impermeable Antora Mujer","d":"Cuando el clima cambia, recurrimos a la Antora. Con elementos de diseño práctico inspirados en nuestra icónica Mountain Jacket, esta chaqueta impermeable altamente versátil establece un nuevo estándar de confiabilidad diaria. Diseñada para una transición sencilla de aceras lluviosas a aguaceros en el sendero, está confeccionada con nuestro tejido DRYVENT™ completamente reciclado, impermeable y cortaviento. Es la mejor protección de la ciudad al sendero, enfocándose en los detalles más importantes cuando llegan las nubes. Úsala todo el día o llévala por si acaso: la Antora siempre está lista.","e":"Cuerpo: 75D 128 g/m² DRYVENT™ 2L—100% poliéster reciclado ripstop con acabado repelente al agua duradero no PFC (non-PFC DWR). Forro del cuerpo: 50 g/m² 100% poliéster reciclado mesh. Forro de capucha, mangas y bolsillos: 75D 66 g/m² 100% poliéster reciclado tafetán.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a8bkd_nfjk3_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-impermeable-antora-mujer-nf0a8bkd-nfjk3","p":"139990.00 CLP","sp":"","c":"Negro","g":"MUJER","q":"2688","a":"In Stock","pm":"CHAQUETAS","pm2":"IMPERMEABLES SIN RELLENO"},{"i":"NF0A3C8D_NFGOE","t":"Chaqueta De Pluma 1996 Retro Nuptse Hombre","d":"Calce estándar. -/- Silueta ancha. -/- Inspirada en los diseños icónicos de nuestra Nuptse Jacket de 1996. -/- Tela externa original brillante anti desgarro con terminación final que repele el agua (DWR). -/- Insulado de gran tamaño inspirados en nuestra Nuptse de 1996. -/- La capucha puedes guardarla en el cuello. -/- La chaqueta puedes guardarla en uno de los bolsillos para las manos. -/- Bolsillo interno con cierre. -/- Cierre frontal bi-direccional VISLON®. -/- Puños ajustables con Velcro®. -/- Pretina ajustable con tirante elástico. -/- Logo TNF de gran tamaño bordado en el pecho y en el hombro trasero derecho.","e":"PESO PROMEDIO: 720 gr. (25.4 oz). -/- CENTRO ESPALDA: 66 cm (26\"). -/- TELAS: color sólido: 100% nylon reciclado anti desgarro con tratamiento final duradero que repele el agua (DWR) de 40D 54 g/m². / color jaspeado: 100% poliéster con DWR de 50D 82 g/m². / color metálico: 100% poliéster con DWR de 30D 50 g/m². / tela de los hombros: 100% nylon tipo tafeta con DWR de 50D y de 69 g/m². / tela forro interno: 100% nylon tipo tafeta de 50D y de 69 g/m². -/- TIPO DE INSULADO: relleno de pluma de ganso 700 certificada por el Estándar Responsable de la Pluma (RDS en inglés) que forma parte de la Control Union.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a3c8d_nf4g3-1.jpg","l":"https://www.thenorthface.cl/chaqueta-de-pluma-1996-retro-nuptse-hombre-nf0a3c8d-nfgoe","p":"399990.00 CLP","sp":"","c":"Negro","g":"HOMBRE","q":"3568","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"},{"i":"NF0A8BKC_NFJK3","t":"Chaqueta Impermeable Antora Rain Parka Mujer","d":"Confeccionada con telas 100% recicladas y disponible en tallas extendidas, la parka impermeable para mujer Antora presenta una silueta audaz hasta el muslo ideal para aventuras bajo lluvia. Esta capa resistente al agua y al viento cuenta con capucha ajustable y bolsillos estilo alpino, para que estés preparada para lo que sea que se te presente.","e":"Cuerpo: DryVent 2L 75D 128 g/m² — ripstop de poliéster 100% reciclado con acabado repelente al agua duradero sin PFC (DWR sin PFC). Tallas: XXS, XS, S, M, L, XL, XXL. Forro del cuerpo: malla de poliéster 100% reciclado de 50 g/m². Forro de capucha, mangas y bolsillo: tafetán de poliéster 100% reciclado de 75D 66 g/m².","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a8bkc_nfjk3_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-impermeable-antora-rain-parka-mujer-nf0a8bkc-nfjk3","p":"149990.00 CLP","sp":"","c":"Gris","g":"MUJER","q":"280","a":"In Stock","pm":"CHAQUETAS","pm2":"IMPERMEABLES SIN RELLENO"},{"i":"NF0A88Z1_NFJK3","t":"Chaqueta Hydrenalite Down Short Mujer","d":"Plumón reciclado de anátidas con relleno de 600. -/- Tela del cuerpo y forro del cuerpo hechos con nylon reciclado. -/- Logo bordado en el pecho izquierdo y en el hombro derecho posterior. -/- Puños con elástico recubierto. -/- Cremallera central VISLON expuesta con solapa interna para evitar corrientes de aire.","e":"Tela: Cuerpo: tafetán de nylon reciclado 100% 30D 45 g/m² con acabado repelente al agua no PFC (DWR sin PFC). -/- Forro del cuerpo: tafetán de nylon reciclado 100% 56 g/m² con acabado repelente al agua no PFC (DWR sin PFC). -/- Forro de los bolsillos: poliéster reciclado 100% 105 g/m². -/- Aislante: plumón reciclado de anátidas con relleno de 600.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a88z1_nfjk3_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-hydrenalite-down-short-mujer-nf0a88z1-nfjk3","p":"259990.00 CLP","sp":"","c":"Negro","g":"MUJER","q":"31","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"},{"i":"NF0A3C8D_NF4G3","t":"Chaqueta De Pluma 1996 Retro Nuptse Hombre","d":"Calce estándar. -/- Silueta ancha. -/- Inspirada en los diseños icónicos de nuestra Nuptse Jacket de 1996. -/- Tela externa original brillante anti desgarro con terminación final que repele el agua (DWR). -/- Insulado de gran tamaño inspirados en nuestra Nuptse de 1996. -/- La capucha puedes guardarla en el cuello. -/- La chaqueta puedes guardarla en uno de los bolsillos para las manos. -/- Bolsillo interno con cierre. -/- Cierre frontal bi-direccional VISLON. -/- Puños ajustables con Velcro. -/- Pretina ajustable con tirante elástico. -/- Logo TNF de gran tamaño bordado en el pecho y en el hombro trasero derecho.","e":"PESO PROMEDIO: 720 gr. (25.4 oz). -/- CENTRO ESPALDA: 66 cm (26\"). -/- TELAS: color sólido: 100% nylon reciclado anti desgarro con tratamiento final duradero que repele el agua (DWR) de 40D 54 g/m². / color jaspeado: 100% poliéster con DWR de 50D 82 g/m². / color metálico: 100% poliéster con DWR de 30D 50 g/m². / tela de los hombros: 100% nylon tipo tafeta con DWR de 50D y de 69 g/m². / tela forro interno: 100% nylon tipo tafeta de 50D y de 69 g/m². -/- TIPO DE INSULADO: relleno de pluma de ganso 700 certificada por el Estándar Responsable de la Pluma (RDS en inglés) que forma parte de la Control Union.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a3c8d_nf4g3_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-de-pluma-1996-retro-nuptse-hombre-nf0a3c8d-nf4g3","p":"399990.00 CLP","sp":"","c":"Negro","g":"HOMBRE","q":"53","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"},{"i":"NF0A5GGE_NFGOG","t":"Chaqueta De Pluma 1996 Retro Nuptse Short Mujer","d":"Ajuste holgado con una silueta recortada y cuadrada. Inspirado en las icónicas líneas de diseño de nuestra chaqueta Nuptse de 1996. Tejido original de ripstop brillante para mayor durabilidad. Acabado DWR no PFC para una mayor repelencia al agua. Relleno de ganso de 700 fill que ofrece calor y sigue siendo extremadamente compacto. Baffles de gran tamaño. cierre expuesta de dos vías en el centro delantero. Bolsillos de manos con cierre de cierre seguros. Puños con elástico y pestañas ajustables con cierre de gancho y bucle. Cordón en el dobladillo para ajustar. Logo en el pecho izquierdo y en el hombro derecho trasero. Tiene los logos de gran tamaño de la chaqueta original del '96. Superposición de ripstop en el cuello y la yoke para mayor durabilidad. Capucha de tres piezas adjunta que se guarda en el cuello. Puños parcialmente elásticos con pestañas ajustables con cierre de gancho y bucle. Cordón elástico en el dobladillo para ajustar. Logo bordado en el pecho izquierdo y en el hombro derecho trasero.","e":"Estilo: NF0A5GGE. Tallas: XS S M L XL XXL. Cuerpo: 20D 38 g/m² 100% nylon reciclado ripstop con acabado repelente al agua duradero sin PFC (DWR sin PFC). Espalda Central: 48 cm. Cuello y canesú: 20D 38 g/m² 100% nylon reciclado ripstop con acabado DWR sin PFC. Forro: 20D 78 g/m² 100% nylon mate reciclado ripstop con acabado DWR sin PFC. Aislamiento: plumón de ganso de 700 fill certificado por el Estándar de Plumón Responsable (RDS) por Control Union.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a5gge_nfgog_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-de-pluma-1996-retro-nuptse-short-mujer-nf0a5gge-nfgog","p":"329990.00 CLP","sp":"","c":"Negro","g":"MUJER","q":"71","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"},{"i":"NF0A3XEO_NFGOF","t":"Chaqueta De Pluma 1996 Retro Nuptse Mujer","d":"Calce regular. -/- Diseño inspirado en el modelo Nuptse de 1996. -/- Tejido brillante anti-desgarro. -/- Podrás enrollar la capucha y guardarla en el cuello. -/- Cierre frontal expuesto VISLON. -/- Bolsillos laterales con cierres. -/- Podrás guardarla en el bolsillo derecho. -/- Muñequeras ajustables con Velcro. -/- Pretina ajustable.","e":"Estilo: NF0A3XEO. -/- Peso promedio: 625 G (22 Oz). -/- Centro de espalda: 23.75\". -/- Material: 40D 54 G/M² 100% Nylon anti-desgarro con acabado DWR. -/- Forro: 50D 69 G/M² 100% Tafetán de nylon. -/- Relleno de plumas de ganso de 700 certificadas al RDS por Control Union.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a3xeo_nfgof_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-de-pluma-1996-retro-nuptse-mujer-nf0a3xeo-nfgof","p":"399990.00 CLP","sp":"","c":"Negro","g":"MUJER","q":"3034","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"},{"i":"NF0A8BKD_NFBQ7","t":"Chaqueta Impermeable Antora Mujer","d":"Cuando el clima cambia, recurrimos a la Antora. Con elementos de diseño práctico inspirados en nuestra icónica Mountain Jacket, esta chaqueta impermeable altamente versátil establece un nuevo estándar de confiabilidad diaria. Diseñada para una transición sencilla de aceras lluviosas a aguaceros en el sendero, está confeccionada con nuestro tejido DRYVENT completamente reciclado, impermeable y cortaviento. Es la mejor protección de la ciudad al sendero, enfocándose en los detalles más importantes cuando llegan las nubes. Úsala todo el día o llévala por si acaso: la Antora siempre está lista.","e":"Cuerpo: 75D 128 g/m² DRYVENT 2L—100% poliéster reciclado ripstop con acabado repelente al agua duradero no PFC (non-PFC DWR). Forro del cuerpo: 50 g/m² 100% poliéster reciclado mesh. Forro de capucha, mangas y bolsillos: 75D 66 g/m² 100% poliéster reciclado tafetán.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a8bkd_nfbq7_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-impermeable-antora-mujer-nf0a8bkd-nfbq7","p":"139990.00 CLP","sp":"","c":"Café","g":"MUJER","q":"4","a":"In Stock","pm":"CHAQUETAS","pm2":"IMPERMEABLES SIN RELLENO"},{"i":"NF0A84HZ_NF4H0","t":"Chaqueta De Pluma Aconcagua 3 Hombre","d":"Corte estándar. -/- Acabado DWR sin PFC para una mayor repelencia al agua. -/- Tejido principal del cuerpo fabricado con poliéster reciclado. -/- Puños con ribete elástico. -/- Logo transferido por calor en el pecho izquierdo y hombro trasero derecho.","e":"Estilo: NF0A84HZ. -/- Cuerpo: 50D x 50D 78 g/m² Poliéster 100% reciclado con acabado DWR repelente al agua duradero sin PFC. -/- Insulación de pluma 600 con certificado RDS. -/- Aislamiento de la cámara superior, axilas, panel lateral y solapa de tiro: 220 g. -/- Aislamiento de lámina de poliéster reciclado al 90%.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a84hz_nf4h0_1_1.jpg","l":"https://www.thenorthface.cl/m-aconcagua-3-jacket-nf0a84hz-nf4h0","p":"269990.00 CLP","sp":"","c":"Negro","g":"HOMBRE","q":"2280","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"},{"i":"NF0A8D1P_NFJK3","t":"Chaqueta Thermoball Jacket Hombre","d":"Conocemos las chaquetas acolchadas, prácticamente las inventamos. La Men’s THERMOBALL™ Jacket es una actualización moderna llena de innovaciones que te mantienen abrigado desde la ciudad hasta la cima. Su patrón de acolchado actualizado minimiza los puntos fríos, y todos los tejidos y rellenos son ahora 100% reciclados, porque el equipo debe ser más resistente al frío y más amigable con el planeta.","e":"Tallas: S, M, L, XL, XXL, 3XL. Largo espalda central: 67,3 cm. Cuerpo: WINDWALL™ 20D 44 g/m², 100% poliéster reciclado con acabado repelente al agua duradero sin PFC (Non-PFC DWR). Forro: WINDWALL™ 30D 52 g/m², 100% poliéster reciclado. Aislamiento: THERMOBALL™ 11 g/ft², 100% poliéster reciclado posconsumo.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a8d1p_nfjk3_1_3.jpg","l":"https://www.thenorthface.cl/chaqueta-thermoball-jacket-hombre-nf0a8d1p-nfjk3","p":"249990.00 CLP","sp":"174990.00 CLP","c":"Negro","g":"HOMBRE","q":"76","a":"In Stock","pm":"CHAQUETAS","pm2":"SINTETICAS"},{"i":"NF0A8B6G_NF6EO","t":"Chaqueta Cortaviento Cyclone Wind Mujer","d":"Cuerpo: 40D 69 WINDWALL—100% poliéster reciclado con acabado repelente al agua no PFC (no-PFC DWR). Forro de bolsillo: 50D 78 100% poliéster reciclado.","e":"Cuerpo: 40D 69 g/m² WINDWALL™—100% poliéster reciclado con acabado repelente al agua no PFC (no-PFC DWR). Forro de bolsillo: 50D 78 g/m² 100% poliéster reciclado.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a8b6g_nf6eo_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-cortaviento-cyclone-wind-mujer-nf0a8b6g-nf6eo","p":"99990.00 CLP","sp":"59990.00 CLP","c":"Morado","g":"MUJER","q":"19","a":"In Stock","pm":"CHAQUETAS","pm2":"CORTAVIENTOS"},{"i":"NF0A8BKD_NFDI6","t":"Chaqueta Impermeable Antora Mujer","d":"Cuando el clima cambia, recurrimos a la Antora. Con elementos de diseño práctico inspirados en nuestra icónica Mountain Jacket, esta chaqueta impermeable altamente versátil establece un nuevo estándar de confiabilidad diaria. Diseñada para una transición sencilla de aceras lluviosas a aguaceros en el sendero, está confeccionada con nuestro tejido DRYVENT completamente reciclado, impermeable y cortaviento. Es la mejor protección de la ciudad al sendero, enfocándose en los detalles más importantes cuando llegan las nubes. Úsala todo el día o llévala por si acaso: la Antora siempre está lista.","e":"Cuerpo: 75D 128 g/m² DRYVENT 2L—100% poliéster reciclado ripstop con acabado repelente al agua duradero no PFC (non-PFC DWR). Forro del cuerpo: 50 g/m² 100% poliéster reciclado mesh. Forro de capucha, mangas y bolsillos: 75D 66 g/m² 100% poliéster reciclado tafetán.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a8bkd_nfdi6_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-impermeable-antora-mujer-nf0a8bkd-nfdi6","p":"139990.00 CLP","sp":"","c":"Azul","g":"MUJER","q":"173","a":"In Stock","pm":"CHAQUETAS","pm2":"IMPERMEABLES SIN RELLENO"},{"i":"NF0A3JQQ_NFGOF","t":"Chaqueta De Pluma 1996 Retro Nuptse Vest Hombre","d":"Calce estándar. -/- Silueta ancha. -/- Inspirada en los diseños icónicos de nuestra Nuptse Jacket de 1996. -/- Tela externa original brillante anti desgarro con terminación final que repele el agua (DWR). -/- Insulado de gran tamaño inspirados en nuestra Nuptse de 1996. -/- La capucha puedes guardarla en el cuello. -/- La chaqueta puedes guardarla en uno de los bolsillos para las manos. -/- Bolsillo interno con cierre. -/- Cierre frontal bi-direccional VISLON. -/- Puños ajustables con Velcro. -/- Pretina ajustable con tirante elástico. -/- Logo TNF de gran tamaño bordado en el pecho y en el hombro trasero derecho.","e":"Estilo: NF0A3JQQ. -/- PESO PROMEDIO: 485 gr. (17.1 oz). -/- CENTRO ESPALDA: 66 cm (26\"). -/- TELAS: color sólido: 100% nylon anti desgarro con tratamiento final duradero que repele el agua (DWR) de 40D 54 g/m². / color jaspeado: 100% poliéster tipo tafeta con DWR de 50D 82 g/m². / color metálico: 100% poliéster con DWR de 30D 50 g/m². / tela de los hombros: 100% nylon tipo tafeta con DWR de 50D y de 69 g/m². / tela forro interno: 100% nylon de 50D y de 69 g/m². -/- TIPO DE INSULADO: relleno de pluma de ganso de 700 certificada por el Estándar Responsable de la Pluma (RDS en inglés) que forma parte de la Control Union.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a3jqq_nfgof_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-de-pluma-1996-retro-nuptse-vest-hombre-nf0a3jqq-nfgof","p":"299990.00 CLP","sp":"","c":"Negro","g":"HOMBRE","q":"94","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"},{"i":"NF0A7QEY_NFBQW","t":"Chaqueta Impermeable Antora Hombre","d":"Calce estándar. -/- El tejido DryVent de dos capas, impermeable, transpirable y con las costuras selladas y acabado hidrófugo duradero (DWR) te mantendrá siempre seco. -/- Tejido totalmente cortaviento. -/- Diseño de estilo alpino con bolsillos con cierre para las manos. -/- Capucha de tres piezas integrada con cordón ajustable y tope de bloqueo. -/- Cierre oculto por solapa de protección con cierre de velcro en la parte central delantera. -/- Refuerzos elásticos en los puños. -/- Ajuste lateral de la pretina. -/- Logo The North Face de transferencia térmica en el lado izquierdo del pecho y en la parte trasera derecha del hombro.","e":"Estilo: NF0A7QEY. -/- Largo Centro Espalda: 73.6 cm (29\"). -/- Tela principal: 100% nylon reciclado con terminación duradera que repele el agua y que no contiene PFC (DWR libre de PFC) de 70D y de 88 g/m² con tecnología DryVent 2L. -/- Tela forro interno: 100% poliéster reciclado tipo malla 50 g/m². -/- Tela forro interno de la capucha y de las mangas: 100% poliéster reciclado tipo tafeta de 75D y de 66 g/m².","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a7qey_nfbqw_1.jpg","l":"https://www.thenorthface.cl/chaqueta-impermeable-antora-hombre-nf0a7qey-nfbqw","p":"139990.00 CLP","sp":"","c":"Verde oscuro","g":"HOMBRE","q":"1015","a":"In Stock","pm":"CHAQUETAS","pm2":"IMPERMEABLES SIN RELLENO"},{"i":"NF0A873S_NFKX7","t":"Chaqueta Impermeable Warm Antora Niños","d":"Gorro de tres piezas adjunto con túnel elástico para lluvia para un ajuste ceñido. -/- Tejido del cuerpo hecho con nylon reciclado, forro hecho con poliéster reciclado. -/- Puños con elástico encerrado y detalle reflectante. -/- Logo transferido por calor en el pecho izquierdo y en el hombro derecho trasero. -/- Aislamiento sintético Heatseeker Eco en mangas y parte inferior del cuerpo hecho con fibras huecas para mayor calor, rendimiento y durabilidad. -/- Capucha y parte superior del cuerpo forradas con suave vellón de alta densidad. -/- Etiqueta de identificación. -/- Cierre central de bobina invertida con solapa y protector de barbilla. -/- Bolsillos de mano seguros con cremallera inversa. -/- Mangas ajustadas. -/- Corte estándar. -/- Concha DryVent 2L impermeable, transpirable y sellada con costuras ayuda a mantenerlos secos, con acabado DWR sin PFC.","e":"Estilo: NF0A873S. -/- Cuerpo: 104 G/M² DryVent 2L-100% nylon reciclado Ripstop con acabado repelente al agua duradero (Non-PFC DWR). -/- Capucha y forro superior: 220 G/M² 100% poliéster reciclado. -/- Aislamiento: 60 G Heatseeker Eco 70% Poliéster reciclado post-consumo en mangas y parte inferior del cuerpo. -/- Forro de la parte inferior del cuerpo y de las mangas: 73 G/M² 100% poliéster reciclado con acabado DWR sin PFC. -/- -/- Centro de la espalda: 59 cm.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a873s_nfkx7_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-impermeable-warm-antora-ninos-nf0a873s-nfkx7","p":"139990.00 CLP","sp":"83990.00 CLP","c":"Negro","g":"NIÑO","q":"105","a":"In Stock","pm":"CHAQUETAS","pm2":"IMPERMEABLES CON RELLENO"},{"i":"NF0A84IK_NF4H0","t":"Chaqueta De Pluma Aconcagua 3 Vest Hombre","d":"Hemos creado un caballo de batalla para el frío. El Vest Aconcagua 3 para hombre proporciona calor desde las primeras heladas hasta el deshielo primaveral. El tejido reciclado de su cuerpo está forrado con una combinación de plumón 600 y aislante sintético para aportar calor sin abultar. Esta es la capa que te mantendrá en marcha cuando bajen las temperaturas.","e":"Estilo: NF0A84IK. Cuerpo: 50D x 50D 78 g/m² 100% poliéster reciclado con acabado repelente al agua sin PFC (DWR sin PFC). Aislamiento Principal del Cuerpo: 50% plumón reciclado de aves acuáticas de 600 fill 50% poliéster reciclado. Solapa de Corriente Panel Superior Axila y Panel Lateral Aislamiento: 220 g/m² 90% poliéster reciclado 10% aislamiento de lámina de poliéster. Tallas: S M L XL XXL 3XL. Largo Centro Espalda: 27.25''.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a84ik_nf4h0_1_1.jpg","l":"https://www.thenorthface.cl/men-s-aconcagua-3-vest-nf0a84ik-nf4h0","p":"209990.00 CLP","sp":"","c":"Negro","g":"HOMBRE","q":"283","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"},{"i":"NF0A8727_NFT4S","t":"Chaqueta Cortaviento Higher Run Wind Hombre","d":"Tejido WindWall resistente al viento. -/- Capucha de tres piezas integrada con ribete elástico. -/- Cremallera bidireccional invertida en la parte central delantera para una ventilación regulable. -/- Se guarda dentro del bolsillo con cremallera en el pecho. -/- Bolsillos para las manos en la costura lateral. -/- Sisas con ribete elástico. -/- Trabilla para colgar en la parte trasera interior bajo el cuello. -/- Cordón elástico interior con topes de bloqueo en el bajo para brindar un ajuste preciso. -/- Modelos de color TNF Black, Vivid Flame Trailglyph Print, Vivid Flame-Black Currant Purple: logotipo reflectante aplicado por transferencia térmica en el lado izquierdo del pecho y en la parte trasera del hombro derecho y estampado gráfico en la parte inferior trasera, modelo de color Style Lemon Yellow-Shady Blue: logotipo reflectante aplicado por transferencia térmica en el lado izquierdo del pecho y estampado gráfico en el bolsillo del pecho y la parte trasera.","e":"Centro de la espalda: 70.5 cm (27.75\"). -/- 50D x 50D 78 g/m² WINDWALL™—100% poliéster reciclado, tejido liso, con acabado repelente al agua duradero sin PFC (DWR sin PFC).","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a8727_nft4s_1.jpg","l":"https://www.thenorthface.cl/m-higher-run-wind-jacket-nf0a8727-nft4s","p":"139990.00 CLP","sp":"83990.00 CLP","c":"Celeste","g":"HOMBRE","q":"22","a":"In Stock","pm":"CHAQUETAS","pm2":"CORTAVIENTOS"},{"i":"NF0A88WH_NFJK3","t":"Chaqueta Insulada Junction Hombre","d":"Cuerpo: 50D 73 g/m² tafetán de poliéster reciclado 100% con acabado repelente al agua duradero sin PFC (DWR sin PFC). -/- Forro del cuello: 346 g/m² fleece de alto pelo con 70% poliéster reciclado y 30% poliéster. -/- Aislamiento: 100 g Heatseeker™ con 70% poliéster reciclado postconsumo.","e":"Cuerpo: 50D 73 g/m² tafetán de poliéster reciclado 100% con acabado repelente al agua duradero sin PFC (DWR sin PFC). -/- Forro del cuello: 346 g/m² fleece de alto pelo con 70% poliéster reciclado y 30% poliéster. -/- Aislamiento: 100 g Heatseeker™ con 70% poliéster reciclado postconsumo.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a88wh_nfjk3_1_1.jpg","l":"https://www.thenorthface.cl/men-s-junction-insulated-jacket-nf0a88wh-nfjk3","p":"149990.00 CLP","sp":"","c":"Negro","g":"HOMBRE","q":"264","a":"In Stock","pm":"CHAQUETAS","pm2":"SINTETICAS"},{"i":"NF0A88XU_NFJK3","t":"Chaqueta De Plumas Hydrenalite Down Hombre","d":"Corte estándar: este modelo es fiel a la talla indicada para ofrecer un ajuste más cómodo y sencillo. -/- Acabado DWR sin PFC para mayor protección contra el agua. -/- Plumón de ave acuática reciclado de 600 cuins. -/- Cuello alto. -/- Cremallera VISLON con solapa de protección interior a la vista en la parte central delantera. -/- Bolsillos con cremallera a la vista para las manos. -/- Puños con ribete elástico. -/- Bajo con cordón ajustable interior y topes de bloqueo para brindar un ajuste preciso. -/- Logotipo bordado en el lado izquierdo del pecho y en la parte trasera del hombro derecho.","e":"Estilo: NF0A88XU. -/- Tejido del cuerpo: Tafetán de Nylon reciclado 100 % de 45 g/m² con acabado hidrófugo duradero (DWR) sin perfluorocarburos (PFC). -/- Tejido del forro: Tafetán de Nylon reciclado 100 % de 56 g/m² con acabado hidrófugo duradero (DWR) sin perfluorocarburos (PFC). -/- Tejido del forro de los bolsillos: 100 % poliéster reciclado de 105 g/m². -/- Aislamiento térmico: Relleno de plumón de ave acuática 100 % reciclado de 600 cuins.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a88xu_nfjk3_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-de-plumas-hydrenalite-down-hombre-nf0a88xu-nfjk3","p":"279990.00 CLP","sp":"","c":"Negro","g":"HOMBRE","q":"271","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"},{"i":"NF0A88TE_NFJK3","t":"Chaqueta Metropolis Mujer","d":"Calce estándar: Esta prenda tiene un calce fiel a la talla, ofreciendo un ajuste fácil y cómodo. -/- Silueta femenina. -/- Acabado con tratamiento DWR no PFC para mayor repelencia al agua. -/- Cuerpo aislado con pluma reciclada de pato de 600-fill. -/- Aislante sintético Heatseeker Eco en la solapa, cinturilla y correa, fabricado con fibras de núcleo hueco para mayor calidez, rendimiento y durabilidad. -/- Capucha de tres piezas con solapa de tormenta y cuello interno con cierre a presión oculto. -/- Mangas raglán. -/- Cierre frontal central VISLON de dos vías con solapa interna y protector de mentón. -/- Ajuste de cintura externo que imita el diseño de una mochila para fácil ajuste. -/- Bolsillos de mano con cremallera reverse-coil. -/- Puños con acabado limpio e interior con dobladillo. -/- Logo transferido en el pecho izquierdo y en el hombro derecho posterior.","e":"Estilo: NF0A88TE. -/- Tejido - Parte Inferior, Cintura y Cinturón: 50 g/m², 100% poliéster reciclado (lado brillante) con acabado repelente al agua no PFC (DWR no PFC). -/- Tejido - Capucha, Cuello, Yugo y Mangas: 50 g/m², 100% poliéster reciclado (lado mate) con acabado repelente al agua no PFC (DWR no PFC). -/- Tejido - Forro: 73 g/m², 100% poliéster reciclado con acabado repelente al agua no PFC (DWR no PFC). -/- Aislante - Cuerpo: Pluma reciclada de pato de 600-fill. -/- Aislante - Solapa, Cintura y Cinturón: 100 g Heatseeker Eco–70% poliéster reciclado post-consumo.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a88te_nfjk3_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-metropolis-mujer-nf0a88te-nfjk3","p":"349990.00 CLP","sp":"","c":"Negro","g":"MUJER","q":"45","a":"In Stock","pm":"CHAQUETAS","pm2":"SINTETICAS"},{"i":"NF0A8D1P_NF8K2","t":"Chaqueta Thermoball Jacket Hombre","d":"Conocemos las chaquetas acolchadas, prácticamente las inventamos. La Men’s THERMOBALL™ Jacket es una actualización moderna llena de innovaciones que te mantienen abrigado desde la ciudad hasta la cima. Su patrón de acolchado actualizado minimiza los puntos fríos, y todos los tejidos y rellenos son ahora 100% reciclados, porque el equipo debe ser más resistente al frío y más amigable con el planeta.","e":"Tallas: S, M, L, XL, XXL, 3XL. Largo espalda central: 67,3 cm. Cuerpo: WINDWALL™ 20D 44 g/m², 100% poliéster reciclado con acabado repelente al agua duradero sin PFC (Non-PFC DWR). Forro: WINDWALL™ 30D 52 g/m², 100% poliéster reciclado. Aislamiento: THERMOBALL™ 11 g/ft², 100% poliéster reciclado posconsumo.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a8d1p_nf8k2_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-thermoball-jacket-hombre-nf0a8d1p-nf8k2","p":"249990.00 CLP","sp":"174990.00 CLP","c":"Azul marino","g":"HOMBRE","q":"22","a":"In Stock","pm":"CHAQUETAS","pm2":"SINTETICAS"},{"i":"NF0A8D3S_NFJK3","t":"Chaqueta Thermoball Jacket Mujer","d":"Conocemos las chaquetas acolchadas, prácticamente las inventamos. La Women’s THERMOBALL™ Jacket es una actualización moderna llena de innovaciones que te mantienen abrigada desde la ciudad hasta la cima. Su patrón de acolchado actualizado minimiza los puntos fríos, y todos los tejidos y rellenos son ahora 100% reciclados, porque el equipo debe ser más resistente al frío y más amigable con el planeta.","e":"Tallas: XS, S, M, L, XL, XXL. Largo espalda central: 61,6 cm. Cuerpo: WINDWALL™ 20D 44 g/m², 100% poliéster reciclado con acabado repelente al agua duradero sin PFC (Non-PFC DWR). Forro: WINDWALL™ 30D 52 g/m², 100% poliéster reciclado. Aislamiento: THERMOBALL™ 11 g/ft², 100% poliéster reciclado posconsumo.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a8d3s_nfjk3_1_3.jpg","l":"https://www.thenorthface.cl/chaqueta-thermoball-jacket-mujer-nf0a8d3s-nfjk3","p":"249990.00 CLP","sp":"174990.00 CLP","c":"Negro","g":"MUJER","q":"89","a":"In Stock","pm":"CHAQUETAS","pm2":"SINTETICAS"},{"i":"NF0A3C8D_NFGOB","t":"Chaqueta De Pluma 1996 Retro Nuptse Hombre","d":"Calce estándar. -/- Silueta ancha. -/- Inspirada en los diseños icónicos de nuestra Nuptse Jacket de 1996. -/- Tela externa original brillante anti desgarro con terminación final que repele el agua (DWR). -/- Insulado de gran tamaño inspirados en nuestra Nuptse de 1996. -/- La capucha puedes guardarla en el cuello. -/- La chaqueta puedes guardarla en uno de los bolsillos para las manos. -/- Bolsillo interno con cierre. -/- Cierre frontal bi-direccional VISLON. -/- Puños ajustables con Velcro. -/- Pretina ajustable con tirante elástico. -/- Logo TNF de gran tamaño bordado en el pecho y en el hombro trasero derecho.","e":"PESO PROMEDIO: 720 gr. (25.4 oz). -/- CENTRO ESPALDA: 66 cm (26\"). -/- TELAS: color sólido: 100% nylon reciclado anti desgarro con tratamiento final duradero que repele el agua (DWR) de 40D 54 g/m². / color jaspeado: 100% poliéster con DWR de 50D 82 g/m². / color metálico: 100% poliéster con DWR de 30D 50 g/m². / tela de los hombros: 100% nylon tipo tafeta con DWR de 50D y de 69 g/m². / tela forro interno: 100% nylon tipo tafeta de 50D y de 69 g/m². -/- TIPO DE INSULADO: relleno de pluma de ganso 700 certificada por el Estándar Responsable de la Pluma (RDS en inglés) que forma parte de la Control Union.","img":"https://www.thenorthface.cl/media/catalog/product/n/f/nf0a3c8d_nfgob_1_1.jpg","l":"https://www.thenorthface.cl/chaqueta-de-pluma-1996-retro-nuptse-hombre-nf0a3c8d-nfgob","p":"399990.00 CLP","sp":"","c":"Azul","g":"HOMBRE","q":"562","a":"In Stock","pm":"CHAQUETAS","pm2":"PLUMAS Y FIBRAS NATURALES"}];
+var RATINGS={};
+
+async function fetchRating(sku_id){
+  var base=sku_id.split('_')[0];
+  if(RATINGS[base]!==undefined)return RATINGS[base];
+  var TOKEN='euiBoGzgKtJ2pKT4O5JaXhEz5h8eNjbAOGRkMs3PQlzv2tErL5gmh5HXzSPl';
+  var url='https://api3.verificado.ai/reviews/'+TOKEN+'/product/'+sku_id+'/filter/0/sort/mps/page/1';
+  try{
+    var res=await fetch(url);
+    var json=await res.json();
+    var avg=json&&json.data&&json.data.average_rating;
+    var tot=json&&json.data&&json.data.total_reviews;
+    var r=(avg&&tot)?{score:parseFloat(avg),count:parseInt(tot)}:null;
+    RATINGS[base]=r; return r;
+  }catch(e){RATINGS[base]=null;return null;}
+}
+
+function extractAttrs(p1,p2){
+  var rules=[
+    {label:'Impermeabilidad',always:true,winnerTag:'Superior',
+     extract:function(p){var t=(p.description+p.espTecnicas).toLowerCase();
+       if(t.indexOf('2.5l')>=0||t.indexOf('2,5l')>=0)return{val:'DryVent 2.5L',score:4};
+       if(t.indexOf('dryvent')>=0||t.indexOf('2l')>=0)return{val:'DryVent 2L',score:3};
+       if(t.indexOf('impermeable')>=0)return{val:'Impermeable',score:2};
+       return null;},
+     render:function(v,w){if(!v)return'—';
+       var b=[1,2,3,4].map(function(i){return'<div class="lvl-bar'+(i<=v.score?' on':'')+'"></div>';}).join('');
+       return'<div class="level">'+b+'</div>'+v.val;},
+     winner:function(a,b){return a&&b?(a.score>b.score?'a':b.score>a.score?'b':null):a?'a':b?'b':null;}},
+    {label:'Aislaci\u00f3n',always:false,winnerTag:'+Calidez',
+     extract:function(p){var t=(p.description+p.espTecnicas).toLowerCase();
+       if(t.indexOf('thermoball')>=0)return{val:'ThermoBall\u2122',score:3};
+       if(t.indexOf('heatseeker')>=0)return{val:'HeatSeeker\u2122',score:2};
+       if(t.indexOf('700')>=0&&(t.indexOf('plum')>=0||t.indexOf('down')>=0))return{val:'Plum\u00f3n 700 fill',score:4};
+       if(t.indexOf('600')>=0&&(t.indexOf('plum')>=0||t.indexOf('down')>=0))return{val:'Plum\u00f3n 600 fill',score:3};
+       if(t.indexOf('plum')>=0||t.indexOf('down')>=0)return{val:'Plum\u00f3n natural',score:3};
+       return null;},
+     render:function(v){return v?v.val:'\u2014';},
+     winner:function(a,b){return a&&b?(a.score>b.score?'a':b.score>a.score?'b':null):null;}},
+    {label:'Cobertura',always:false,winnerTag:'+Cobertura',
+     extract:function(p){var t=(p.title+p.description).toLowerCase();
+       if(t.indexOf('parka')>=0||t.indexOf('muslo')>=0)return{val:'Parka hasta el muslo',score:2};
+       if(t.indexOf('vest')>=0||t.indexOf('chaleco')>=0)return{val:'Chaleco sin mangas',score:0};
+       return{val:'Chaqueta est\u00e1ndar',score:1};},
+     render:function(v){return v?v.val:'\u2014';},
+     winner:function(a,b){return a&&b?(a.score>b.score?'a':b.score>a.score?'b':null):null;}},
+    {label:'Ventilaci\u00f3n',always:false,winnerTag:null,
+     extract:function(p){var t=p.description.toLowerCase();
+       var ax=t.indexOf('axila')>=0||t.indexOf('ventilac')>=0;
+       return{val:ax?'Transpirable + axilas':'Transpirable',score:ax?2:1};},
+     render:function(v,w){return(v?v.val:'\u2014')+(w?' <span class="tag">+ Axilas</span>':'');},
+     winner:function(a,b){return a&&b&&a.score!==b.score?(a.score>b.score?'a':'b'):null;}},
+    {label:'Empaquetable',always:false,winnerTag:'Empaquetable',
+     extract:function(p){var t=p.description.toLowerCase();
+       var pk=t.indexOf('empac')>=0||t.indexOf('guardar en')>=0||t.indexOf('guarda en')>=0||t.indexOf('bolsillo derecho')>=0;
+       return{val:pk,score:pk?1:0};},
+     render:function(v){return v&&v.val?'<span class="ico-yes">\u2713</span> S\u00ed, en bolsillo':'<span class="ico-no">\u00d7</span> No';},
+     winner:function(a,b){return a&&b?(a.score>b.score?'a':b.score>a.score?'b':null):null;}},
+    {label:'Capucha',always:true,winnerTag:null,
+     extract:function(p){var t=p.description.toLowerCase();var has=t.indexOf('capucha')>=0;
+       return{val:has?(t.indexOf('ajustable')>=0?'Ajustable':'Incluida'):'No incluida',score:has?1:0};},
+     render:function(v){return v&&v.score?'<span class="ico-yes">\u2713</span> '+v.val:'<span class="ico-no">\u00d7</span> '+(v?v.val:'\u2014');},
+     winner:function(a,b){return a&&b?(a.score>b.score?'a':b.score>a.score?'b':null):null;}},
+    {label:'Bolsillos',always:false,winnerTag:'+Almacenamiento',
+     extract:function(p){var t=p.description.toLowerCase();
+       if(t.indexOf('pecho')>=0||t.indexOf('interior')>=0||t.indexOf('interno')>=0)return{val:'Pecho + manos + interior',score:3};
+       return{val:'2 x manos',score:1};},
+     render:function(v,w){return(v?v.val:'\u2014')+(w?' <span class="tag">+Almacenamiento</span>':'');},
+     winner:function(a,b){return a&&b?(a.score>b.score?'a':b.score>a.score?'b':null):null;}},
+    {label:'Material',always:false,winnerTag:'+Resistente',
+     extract:function(p){var t=(p.description+p.espTecnicas).toLowerCase();
+       var ny=t.indexOf('nylon')>=0;var rc=t.indexOf('reciclado')>=0;
+       return{val:(ny?'Nylon':'Poli\u00e9ster')+(rc?' reciclado':''),score:ny?2:1};},
+     render:function(v,w){return(v?v.val:'\u2014')+(w?' <span class="tag">+Resistente</span>':'');},
+     winner:function(a,b){return a&&b?(a.score>b.score?'a':b.score>a.score?'b':null):null;}},
+    {label:'Costuras',always:false,winnerTag:null,
+     extract:function(p){var has=(p.description+p.espTecnicas).toLowerCase().indexOf('sellad')>=0;
+       return{val:has?'Selladas':'Sin sellar',score:has?1:0};},
+     render:function(v){return v&&v.score?'<span class="ico-yes">\u2713</span> Selladas':'<span class="ico-no">\u00d7</span> Sin sellar';},
+     winner:function(a,b){return a&&b?(a.score>b.score?'a':b.score>a.score?'b':null):null;}}
+  ];
+  var result=[];
+  rules.forEach(function(rule){
+    var va=rule.extract(p1),vb=rule.extract(p2);
+    if(!va&&!vb)return;
+    var w=rule.winner(va,vb);
+    if(va&&vb&&va.val===vb.val&&!rule.always)return;
+    result.push({rule:rule,va:va,vb:vb,w:w});
+  });
+  return result;
+}
+
+function sn(t){return t.replace(/Chaqueta\s+(De\s+Pluma\s+|Impermeable\s+|Cortaviento\s+|Insulada\s+|De\s+Plumas\s+)?/i,'').trim();}
+function fp(n){return'$'+Math.round(n).toLocaleString('es-CL');}
+function pp(p){return{id:p.i,title:p.t,description:p.d,espTecnicas:p.e,image:p.img,link:p.l,price:parseFloat(p.p)||0,sale:p.sp?parseFloat(p.sp):null,color:p.c,genero:p.g,qty:parseInt(p.q)||0,availability:p.a,pmax:p.pm,pmax2:p.pm2};}
+function rrv(val){if(!val)return'<span style="color:var(--muted);font-size:11px;font-style:italic">Sin opiniones</span>';var s='\u2605'.repeat(Math.round(val.score))+'\u2606'.repeat(5-Math.round(val.score));return s+' '+val.score.toFixed(1)+' <span class="tag">'+val.count+' opiniones</span>';}
+function urc(id,val){var el=document.getElementById(id);if(el)el.innerHTML=rrv(val);}
+
+function populateSelects(){
+  var s1=document.getElementById('sel1'),s2=document.getElementById('sel2'),groups={};
+  CATALOG.forEach(function(p){var c=p.pm2||'Otros';if(!groups[c])groups[c]=[];groups[c].push(p);});
+  [s1,s2].forEach(function(sel){
+    Object.keys(groups).sort().forEach(function(cat){
+      var og=document.createElement('optgroup');og.label=cat;
+      groups[cat].forEach(function(p){var opt=document.createElement('option');opt.value=p.i;opt.textContent=sn(p.t)+' \u2014 '+p.c;og.appendChild(opt);});
+      sel.appendChild(og);});});
+  s1.value='NF0A8BKC_NFJK3';s2.value='NF0A8BKD_NFJK3';onSelect();
+}
+
+function onSelect(){
+  var v1=document.getElementById('sel1').value,v2=document.getElementById('sel2').value;
+  document.getElementById('tag1').classList.toggle('active',!!v1);
+  document.getElementById('tag2').classList.toggle('active',!!v2);
+  var ok=v1&&v2&&v1!==v2;document.getElementById('cmp-btn').disabled=!ok;
+  if(ok)runCompare();
+}
+
+function runCompare(){
+  var v1=document.getElementById('sel1').value,v2=document.getElementById('sel2').value;
+  if(!v1||!v2||v1===v2)return;
+  var r1=CATALOG.find(function(x){return x.i===v1;}),r2=CATALOG.find(function(x){return x.i===v2;});
+  if(!r1||!r2)return;render(pp(r1),pp(r2));
+}
+
+function render(p1,p2){
+  var n1=sn(p1.title),n2=sn(p2.title),ph='data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==';
+  var attrs=extractAttrs(p1,p2);
+  function pb(p){if(p.sale)return'<div class="pcard-price sale-price">'+fp(p.sale)+'</div><div class="original-price">'+fp(p.price)+'</div>';return'<div class="pcard-price">'+fp(p.price)+'</div><div class="pcard-installment">6 x '+fp(p.price/6)+' sin inter\u00e9s</div>';}
+  function sb(p){if(p.availability!=='In Stock')return'<span class="stock-low">Sin stock</span>';if(p.qty<10)return'<span class="stock-low">\u00daltimas unidades</span>';return'<span class="stock-ok">En stock</span>';}
+  function ut(p){var t=p.description.toLowerCase(),tags=[];if(t.indexOf('trekking')>=0||t.indexOf('sendero')>=0)tags.push('Trekking');if(t.indexOf('ciudad')>=0||t.indexOf('acera')>=0)tags.push('Ciudad');if(t.indexOf('empac')>=0||t.indexOf('guardar')>=0)tags.push('Viajes');if(t.indexOf('parka')>=0||t.indexOf('muslo')>=0)tags.push('Lluvia intensa');if(t.indexOf('plum')>=0||t.indexOf('down')>=0)tags.push('Fr\u00edo extremo');return tags.filter(function(v,i,a){return a.indexOf(v)===i;}).slice(0,3);}
+  var w1=attrs.filter(function(a){return a.w==='a';}).length,w2=attrs.filter(function(a){return a.w==='b';}).length;
+  var rows=attrs.map(function(item){
+    var rule=item.rule,va=item.va,vb=item.vb,wA=item.w==='a',wB=item.w==='b';
+    var tA=wA&&rule.winnerTag?' <span class="tag">'+rule.winnerTag+'</span>':'';
+    var tB=wB&&rule.winnerTag?' <span class="tag">'+rule.winnerTag+'</span>':'';
+    return'<div class="trow"><div class="tlabel">'+rule.label+'</div><div class="tval'+(wA?' winner':'')+'">'+rule.render(va,wA)+tA+'</div><div class="tval'+(wB?' winner':'')+'">'+rule.render(vb,wB)+tB+'</div></div>';
+  }).join('');
+  rows+='<div class="trow"><div class="tlabel">Valoraci\u00f3n</div><div class="tval" id="rating-a"><span style="color:var(--muted);font-size:11px">...</span></div><div class="tval" id="rating-b"><span style="color:var(--muted);font-size:11px">...</span></div></div>';
+  var t1=ut(p1),t2=ut(p2);if(w1>w2)t1.push('Mejor spec');if(w2>w1)t2.push('Mejor spec');
+  var vtags=function(ts){return ts.map(function(t){return'<span class="vtag hi">'+t+'</span>';}).join('');};
+  document.getElementById('output').innerHTML=
+    '<div class="products">'+
+    '<div class="pcard active"><img src="'+p1.image+'" alt="" onerror="this.src=\''+ph+'\'"><div class="pcard-overlay"><span class="pcard-tag">A</span></div><div class="pcard-body"><div class="pcard-name">'+n1+'</div>'+pb(p1)+'<div class="color-tag">'+p1.color+'</div>'+sb(p1)+'</div></div>'+
+    '<div class="pcard"><img src="'+p2.image+'" alt="" onerror="this.src=\''+ph+'\'"><div class="pcard-overlay"><span class="pcard-tag">B</span></div><div class="pcard-body"><div class="pcard-name">'+n2+'</div>'+pb(p2)+'<div class="color-tag">'+p2.color+'</div>'+sb(p2)+'</div></div>'+
+    '</div>'+
+    '<div class="table-section-title">Especificaciones</div>'+
+    '<div class="table-wrap"><div class="table-head"><div class="th">Atributo</div><div class="th ca">A \u2014 '+n1.split(' ')[0]+'</div><div class="th cb">B \u2014 '+n2.split(' ')[0]+'</div></div>'+rows+'</div>'+
+    '<div class="verdict"><div class="verdict-top"><div class="verdict-eyebrow">Veredicto</div><div class="verdict-title">\u00bfCu\u00e1l es tu terreno?</div></div>'+
+    '<div class="verdict-grid">'+
+    '<div class="vcard"><div class="vcard-name">A \u2014 '+n1.split(' ')[0]+'</div><div class="vcard-use">'+p1.description.split('.')[0].trim()+'.</div><div class="vtags">'+vtags(t1)+'</div></div>'+
+    '<div class="vcard"><div class="vcard-name">B \u2014 '+n2.split(' ')[0]+'</div><div class="vcard-use">'+p2.description.split('.')[0].trim()+'.</div><div class="vtags">'+vtags(t2)+'</div></div>'+
+    '</div></div>';
+  fetchRating(p1.id).then(function(r){urc('rating-a',r);});
+  fetchRating(p2.id).then(function(r){urc('rating-b',r);});
+}
+
+populateSelects();
+
+</script>
+</body>
+</html>
